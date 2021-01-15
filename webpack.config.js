@@ -42,7 +42,7 @@ module.exports = {
       {
         exclude: /node_modules/,
         test: /\.ts?$/,
-        use: 'awesome-typescript-loader?{configFileName: "tsconfig.json"}',
+        use: 'ts-loader',
       },
       {
         test: /\.scss$/,
