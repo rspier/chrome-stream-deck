@@ -33,7 +33,7 @@
     "license-validate": "yarn sofie-licensecheck"
   },
   "dependencies": {
-    "buffer": "^6.0.3",
-    "elgato-stream-deck-web": "link:../node-elgato-stream-deck/packages/elgato-stream-deck-web"
+    "@elgato-stream-deck/webhid": "link:../node-elgato-stream-deck/packages/webhid",
+    "buffer": "^6.0.3"
   }
 }

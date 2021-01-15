@@ -12,13 +12,11 @@ Hopefully WebHID will be on by default soon.
 
 ## IMPORTANT - dependencies
 
-Requires the code in https://github.com/Julusian/node-elgato-stream-deck/pull/8 to work. (Source: https://github.com/rspier/node-elgato-stream-deck/tree/webhid-next)
-
-Until it is merged:
+Until the webhid node library is released to npm:
 
 ```shell
 # At the same level as the chrome-stream-deck directory:
-$ git clone https://github.com/rspier/node-elgato-stream-deck -b webhid-next
+$ git clone https://github.com/Julusian/node-elgato-stream-deck -b feat/webhid
 ```
 
 ## Usage

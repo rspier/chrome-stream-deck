@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import './contentscript.scss';
-import { requestStreamDeck, getStreamDeck, StreamDeckWeb, StreamDeck } from 'elgato-stream-deck-web';
+import { requestStreamDecks, getStreamDecks, StreamDeckWeb, StreamDeck } from '@elgato-stream-deck/webhid';
 
 // Create a button so we can call requestStreamDeck() -- it requires a user action.
 const p = document.createElement("p");
@@ -33,8 +33,9 @@ if ("hid" in (navigator as any)) {
 
 window.addEventListener("load", async (_) => {
     // attempt to get the previously selected Stream Deck.
-    let sd = await getStreamDeck();
-    if (sd) {
+    let sds = await getStreamDecks();
+    if (sds.length > 0 ) {
+        let sd = sds[0]
         await drawButtons(sd)
         setupHandlers(sd)
     }
@@ -77,15 +78,23 @@ let setupHandlers = (sd: StreamDeckWeb) => {
     }, 5000)
 }
 
+let getDevice = async () => {
+    let sds = await getStreamDecks();
+    if (sds.length > 0) {
+        return sds[0];
+    }
+    console.log("couldn't get, so requesting...")
+    sds = await requestStreamDecks();
+    if (sds.length > 0) {
+        return sds[0];
+    }
+    return null;
+}
 
 p.addEventListener("click", async (_) => {
     console.log('got click');
     // attempt to get the previously selected Stream Deck
-    let sd = await getStreamDeck();
-    if (!sd) {
-        console.log("couldn't get, so requesting...")
-        sd = await requestStreamDeck();
-    }
+    let sd = await getDevice()
     if (!sd) {
         console.log("no streamdeck found")
         return
