@@ -26,7 +26,7 @@ p.textContent = "Stream Deck";
 p.id = "sdbutton"
 document.body.appendChild(p);
 
-/* 
+/*
 // hid isn't yet in the typings, so need to cast it to an any.
 if ("hid" in (navigator as any)) {
     // The WebHID API is supported.
@@ -39,6 +39,11 @@ window.addEventListener("load", async (_) => {
     let sds = await getStreamDecks();
     if (sds.length > 0) {
         let sd = sds[0]
+        // Temporary workaround for getStreamDecks returning a
+        // Promise<Promise<StreamDeckWeb>[]> but claiming to return a
+        // Promise<StreamDeckWeb[]>
+        sd = await sd;
+        await sd.clearPanel()
         await drawButtons(sd)
         setupHandlers(sd)
     }
@@ -69,16 +74,19 @@ let setupHandlers = (sd: StreamDeckWeb) => {
         console.log("got disconnect event")
     });
 
+    // listen to all click events on the page so we can keep things in sync.
+    window.addEventListener("click", () => { drawButtons(sd); })
+
     if (clockInterval) {
         window.clearInterval(clockInterval);
     }
-    // Draw a clock on the top right buttons.  
-    // TODO: just draw on one button
-    clockInterval = window.setInterval(async () => {
-        let now = new Date();
-        await paintButton(sd, 1, "" + now.getHours() % 12)
-        await paintButton(sd, 2, ("0" + now.getMinutes()).substr(-2, 2))
-    }, 5000)
+    // Draw a clock on the top right button.
+    clockInterval = window.setInterval(async () => { drawClock(sd) }, 5000)
+}
+
+let drawClock = async (sd: StreamDeckWeb) => {
+    let now = new Date();
+    await paintButton(sd, 2, now.getHours() % 12 + ":" + ("0" + now.getMinutes()).substr(-2, 2))
 }
 
 let getDevice = async () => {
@@ -102,6 +110,7 @@ p.addEventListener("click", async (_) => {
         console.log("no streamdeck found")
         return
     }
+    await sd.clearPanel()
     await drawButtons(sd)
     setupHandlers(sd)
 });
@@ -159,26 +168,32 @@ let sendButtonKey = (b: number) => {
 
 let drawButton = async (device: StreamDeckWeb, b: number): Promise<void> => {
     // TODO: do something smarter for different kinds of devices
-    let [ a, v ] = meetStatus()
+    let [a, v] = meetStatus()
     switch (b) {
         case 0:
             return paintButton(device, b, "Camera", v)
         case 3:
             return paintButton(device, b, "Microphone", a)
+        case 2:
+            // this is the clock, don't update it here
+            return
         default:
             return device.clearKey(b)
     }
 }
 
 let drawButtons = async (device: StreamDeckWeb) => {
-    await device.clearPanel()
+    if (!("clearPanel" in device)) {
+        console.log("streamdeck not initialized")
+        return
+    }
     for (let b = 0; b < device.NUM_KEYS; b++) {
         await drawButton(device, b)
     }
 }
 
 /*
-// keep track of the last retrieved mute values so we can do conditional updates later.
+// keep track of the last retrieved mute values so we can do an optimization and do conditional updates later.
 let gA: boolean = false;
 let gV: boolean = false;
 */
