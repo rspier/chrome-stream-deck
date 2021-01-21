@@ -14,6 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+// make typescript happy with DOM types
+/// <reference lib="dom" />
+
 import './contentscript.scss';
 import { requestStreamDecks, getStreamDecks, StreamDeckWeb, StreamDeck } from '@elgato-stream-deck/webhid';
 
@@ -34,7 +37,7 @@ if ("hid" in (navigator as any)) {
 window.addEventListener("load", async (_) => {
     // attempt to get the previously selected Stream Deck.
     let sds = await getStreamDecks();
-    if (sds.length > 0 ) {
+    if (sds.length > 0) {
         let sd = sds[0]
         await drawButtons(sd)
         setupHandlers(sd)
@@ -56,12 +59,12 @@ let setupHandlers = (sd: StreamDeckWeb) => {
     });
 
     // TODO: Do we actually need to handle these events?
-    (navigator as any).hid.addEventListener("connect", (_ : Event) => {
+    (navigator as any).hid.addEventListener("connect", (_: Event) => {
         console.log("got connect event")
         // Automatically open event.device or warn user a device is available.
     });
 
-    (navigator as any).hid.addEventListener("disconnect", (_ : Event) => {
+    (navigator as any).hid.addEventListener("disconnect", (_: Event) => {
         // Remove |event.device| from the UI.
         console.log("got disconnect event")
     });
@@ -105,7 +108,7 @@ p.addEventListener("click", async (_) => {
 
 
 // paintButton draws a button with a text label.
-let paintButton = async (device: StreamDeck, b: number, text: string): Promise<void> => {
+let paintButton = async (device: StreamDeck, b: number, text: string, invert = false): Promise<void> => {
     let canvas = document.createElement('canvas')
     canvas.width = device.ICON_SIZE
     canvas.height = device.ICON_SIZE
@@ -117,6 +120,10 @@ let paintButton = async (device: StreamDeck, b: number, text: string): Promise<v
         return
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height)
+    if (invert) {
+        ctx.fillStyle = "red"
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+    }
     // Start with a font that's 80% as high as the button. maxWidth
     // is used on the stroke and fill calls below to scale down.
     ctx.font = (canvas.height * .8) + 'px "Arial"'
@@ -152,11 +159,12 @@ let sendButtonKey = (b: number) => {
 
 let drawButton = async (device: StreamDeckWeb, b: number): Promise<void> => {
     // TODO: do something smarter for different kinds of devices
+    let [ a, v ] = meetStatus()
     switch (b) {
         case 0:
-            return paintButton(device, b, "Camera")
+            return paintButton(device, b, "Camera", v)
         case 3:
-            return paintButton(device, b, "Microphone")
+            return paintButton(device, b, "Microphone", a)
         default:
             return device.clearKey(b)
     }
@@ -167,4 +175,20 @@ let drawButtons = async (device: StreamDeckWeb) => {
     for (let b = 0; b < device.NUM_KEYS; b++) {
         await drawButton(device, b)
     }
+}
+
+/*
+// keep track of the last retrieved mute values so we can do conditional updates later.
+let gA: boolean = false;
+let gV: boolean = false;
+*/
+
+let meetStatus = (): [boolean, boolean] => {
+    let a = document.querySelector("div[aria-label*='ctrl + d']")
+        ?.getAttribute("data-is-muted") == "true";
+    let v = document.querySelector("div[aria-label*='ctrl + e']")
+        ?.getAttribute("data-is-muted") == "true";
+    //gA = a; gV = v;
+    // todo: consider if creating a new array object here is too much overhead
+    return [a, v]
 }
