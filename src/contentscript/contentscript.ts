@@ -26,13 +26,11 @@ p.textContent = "Stream Deck";
 p.id = "sdbutton"
 document.body.appendChild(p);
 
-/*
 // hid isn't yet in the typings, so need to cast it to an any.
-if ("hid" in (navigator as any)) {
-    // The WebHID API is supported.
+if (!("hid" in (navigator as any))) {
+    // The WebHID API is not supported.
+    alert("WebHID not enabled: Enable at chrome://flags/#enable-experimental-web-platform-features");
 }
-// TODO: show some sort of notice if it's not supported.
-*/
 
 window.addEventListener("load", async (_) => {
     // attempt to get the previously selected Stream Deck.
