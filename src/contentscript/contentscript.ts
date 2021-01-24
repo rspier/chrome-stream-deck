@@ -87,7 +87,7 @@ let drawClock = async (sd: StreamDeckWeb) => {
     await paintButton(sd, 2, now.getHours() % 12 + ":" + ("0" + now.getMinutes()).substr(-2, 2))
 }
 
-let getDevice = async () => {
+let getDevice = async () : Promise<StreamDeckWeb|null> => {
     let sds = await getStreamDecks();
     if (sds.length > 0) {
         return sds[0];
