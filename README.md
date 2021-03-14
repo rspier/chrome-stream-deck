@@ -10,18 +10,6 @@ You must enable this Chrome flag to enable WebHID:
 
 Hopefully WebHID will be on by default soon.
 
-## IMPORTANT - dependencies
-
-Until the webhid node library is released to npm:
-
-```shell
-# At the same level as the chrome-stream-deck directory:
-$ git clone https://github.com/Julusian/node-elgato-stream-deck -b feat/webhid
-$ cd node-elgato-stream-deck
-$ yarn
-$ yarn build
-```
-
 ## Build
 
 ```

@@ -33,7 +33,7 @@
     "license-validate": "yarn sofie-licensecheck"
   },
   "dependencies": {
-    "@elgato-stream-deck/webhid": "link:../node-elgato-stream-deck/packages/webhid",
+    "@elgato-stream-deck/webhid": "^5.0.0",
     "awesome-typescript-loader": "^5.2.1",
     "buffer": "^6.0.3"
   }
