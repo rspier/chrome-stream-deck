@@ -20,6 +20,19 @@ limitations under the License.
 import './contentscript.scss';
 import { requestStreamDecks, getStreamDecks, StreamDeckWeb, StreamDeck } from '@elgato-stream-deck/webhid';
 
+
+// See images/README.md for more on these images. 
+let front_handImg = new Image();
+front_handImg.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDI0IDI0IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCI+PHJlY3QgZmlsbD0ibm9uZSIgaGVpZ2h0PSIyNCIgd2lkdGg9IjI0Ii8+PHBhdGggZD0iTTE4LjUsOGMtMC4xNywwLTAuMzQsMC4wMi0wLjUsMC4wNVY0LjVDMTgsMy4xMiwxNi44OCwyLDE1LjUsMmMtMC4xOSwwLTAuMzcsMC4wMi0wLjU0LDAuMDZDMTQuNzUsMC44OSwxMy43MywwLDEyLjUsMCBjLTEuMDYsMC0xLjk2LDAuNjYtMi4zMywxLjU5QzkuOTYsMS41Myw5LjczLDEuNSw5LjUsMS41QzguMTIsMS41LDcsMi42Miw3LDR2MC41NUM2Ljg0LDQuNTIsNi42Nyw0LjUsNi41LDQuNUM1LjEyLDQuNSw0LDUuNjIsNCw3IHY4LjVjMCw0LjY5LDMuODEsOC41LDguNSw4LjVzOC41LTMuODEsOC41LTguNXYtNUMyMSw5LjEyLDE5Ljg4LDgsMTguNSw4eiBNMTksMTUuNWMwLDMuNTktMi45MSw2LjUtNi41LDYuNVM2LDE5LjA5LDYsMTUuNVY3IGMwLTAuMjgsMC4yMi0wLjUsMC41LTAuNVM3LDYuNzIsNyw3djVoMlY0YzAtMC4yOCwwLjIyLTAuNSwwLjUtMC41UzEwLDMuNzIsMTAsNHY3aDJWMi41QzEyLDIuMjIsMTIuMjIsMiwxMi41LDJTMTMsMi4yMiwxMywyLjVWMTEgaDJWNC41QzE1LDQuMjIsMTUuMjIsNCwxNS41LDRTMTYsNC4yMiwxNiw0LjV2OC45MmMtMS43NywwLjc3LTMsMi41My0zLDQuNThoMmMwLTEuNjYsMS4zNC0zLDMtM3YtNC41YzAtMC4yOCwwLjIyLTAuNSwwLjUtMC41IHMwLjUsMC4yMiwwLjUsMC41VjE1LjV6IiBmaWxsPSJ3aGl0ZSIgLz48L3N2Zz4K';
+let mic_noneImg = new Image();
+mic_noneImg.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0Ij48cGF0aCBkPSJNMCAwaDI0djI0SDBWMHoiIGZpbGw9Im5vbmUiLz48cGF0aCBkPSJNMTIgMTRjMS42NiAwIDMtMS4zNCAzLTNWNWMwLTEuNjYtMS4zNC0zLTMtM1M5IDMuMzQgOSA1djZjMCAxLjY2IDEuMzQgMyAzIDN6bS0xLTljMC0uNTUuNDUtMSAxLTFzMSAuNDUgMSAxdjZjMCAuNTUtLjQ1IDEtMSAxcy0xLS40NS0xLTFWNXptNiA2YzAgMi43Ni0yLjI0IDUtNSA1cy01LTIuMjQtNS01SDVjMCAzLjUzIDIuNjEgNi40MyA2IDYuOTJWMjFoMnYtMy4wOGMzLjM5LS40OSA2LTMuMzkgNi02LjkyaC0yeiIgZmlsbD0id2hpdGUiLz48L3N2Zz4K';
+let mic_offImg = new Image();
+mic_offImg.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0Ij48cGF0aCBkPSJNMCAwaDI0djI0SDBWMHoiIGZpbGw9Im5vbmUiLz48cGF0aCBkPSJNMTAuOCA0LjljMC0uNjYuNTQtMS4yIDEuMi0xLjJzMS4yLjU0IDEuMiAxLjJsLS4wMSAzLjkxTDE1IDEwLjZWNWMwLTEuNjYtMS4zNC0zLTMtMy0xLjU0IDAtMi43OSAxLjE2LTIuOTYgMi42NWwxLjc2IDEuNzZWNC45ek0xOSAxMWgtMS43YzAgLjU4LS4xIDEuMTMtLjI3IDEuNjRsMS4yNyAxLjI3Yy40NC0uODguNy0xLjg3LjctMi45MXpNNC40MSAyLjg2TDMgNC4yN2w2IDZWMTFjMCAxLjY2IDEuMzQgMyAzIDMgLjIzIDAgLjQ0LS4wMy42NS0uMDhsMS42NiAxLjY2Yy0uNzEuMzMtMS41LjUyLTIuMzEuNTItMi43NiAwLTUuMy0yLjEtNS4zLTUuMUg1YzAgMy40MSAyLjcyIDYuMjMgNiA2LjcyVjIxaDJ2LTMuMjhjLjkxLS4xMyAxLjc3LS40NSAyLjU1LS45bDQuMiA0LjIgMS40MS0xLjQxTDQuNDEgMi44NnoiIGZpbGw9IndoaXRlIi8+PC9zdmc+Cg==';
+let videocam_offImg = new Image();
+videocam_offImg.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0Ij48cGF0aCBkPSJNMCAwaDI0djI0SDBWMHoiIGZpbGw9Im5vbmUiLz48cGF0aCBkPSJNOS41NiA4bC0yLTItNC4xNS00LjE0TDIgMy4yNyA0LjczIDZINGMtLjU1IDAtMSAuNDUtMSAxdjEwYzAgLjU1LjQ1IDEgMSAxaDEyYy4yMSAwIC4zOS0uMDguNTUtLjE4TDE5LjczIDIxbDEuNDEtMS40MS04Ljg2LTguODZMOS41NiA4ek01IDE2VjhoMS43M2w4IDhINXptMTAtOHYyLjYxbDYgNlY2LjVsLTQgNFY3YzAtLjU1LS40NS0xLTEtMWgtNS42MWwyIDJIMTV6IiBmaWxsPSJ3aGl0ZSIvPjwvc3ZnPgo=';
+let videocamImg = new Image();
+videocamImg.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0Ij48cGF0aCBkPSJNMCAwaDI0djI0SDBWMHoiIGZpbGw9Im5vbmUiIC8+PHBhdGggZD0iTTE1IDh2OEg1VjhoMTBtMS0ySDRjLS41NSAwLTEgLjQ1LTEgMXYxMGMwIC41NS40NSAxIDEgMWgxMmMuNTUgMCAxLS40NSAxLTF2LTMuNWw0IDR2LTExbC00IDRWN2MwLS41NS0uNDUtMS0xLTF6IiBmaWxsPSJ3aGl0ZSIgLz48L3N2Zz4K';
+
 // Create a button so we can call requestStreamDeck() -- it requires a user action.
 const p = document.createElement("p");
 p.textContent = "Stream Deck";
@@ -42,6 +55,8 @@ window.addEventListener("load", async (_) => {
         // Promise<StreamDeckWeb[]>
         sd = await sd;
         await sd.clearPanel()
+        // If the buttons don't draw right, put a small sleep here, but the load
+        // event should handle it.
         await drawButtons(sd)
         setupHandlers(sd)
     }
@@ -79,7 +94,10 @@ let setupHandlers = (sd: StreamDeckWeb) => {
         window.clearInterval(clockInterval);
     }
     // Draw a clock on the top right button.
-    clockInterval = window.setInterval(async () => { drawClock(sd) }, 5000)
+    clockInterval = window.setInterval(async () => {
+        drawButtons(sd);  // this is a good time to make sure buttons are in sync
+        drawClock(sd)
+    }, 5000)
 }
 
 let drawClock = async (sd: StreamDeckWeb) => {
@@ -87,7 +105,7 @@ let drawClock = async (sd: StreamDeckWeb) => {
     await paintButton(sd, 2, now.getHours() % 12 + ":" + ("0" + now.getMinutes()).substr(-2, 2))
 }
 
-let getDevice = async () : Promise<StreamDeckWeb|null> => {
+let getDevice = async (): Promise<StreamDeckWeb | null> => {
     let sds = await getStreamDecks();
     if (sds.length > 0) {
         return sds[0];
@@ -115,7 +133,7 @@ p.addEventListener("click", async (_) => {
 
 
 // paintButton draws a button with a text label.
-let paintButton = async (device: StreamDeck, b: number, text: string, invert = false): Promise<void> => {
+let paintButton = async (device: StreamDeck, b: number, text: string, invert = false, bgColor = "red"): Promise<void> => {
     let canvas = document.createElement('canvas')
     canvas.width = device.ICON_SIZE
     canvas.height = device.ICON_SIZE
@@ -128,7 +146,7 @@ let paintButton = async (device: StreamDeck, b: number, text: string, invert = f
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     if (invert) {
-        ctx.fillStyle = "red"
+        ctx.fillStyle = bgColor
         ctx.fillRect(0, 0, canvas.width, canvas.height)
     }
     // Start with a font that's 80% as high as the button. maxWidth
@@ -145,35 +163,72 @@ let paintButton = async (device: StreamDeck, b: number, text: string, invert = f
     return device.fillKeyBuffer(b, Buffer.from(id.data), { format: 'rgba' })
 }
 
+// paintButton draws a button with a text label.
+let paintButtonImage = async (device: StreamDeck, b: number, image: HTMLImageElement, invert = false, bgColor = "red"): Promise<void> => {
+    let canvas = document.createElement('canvas')
+    canvas.width = device.ICON_SIZE
+    canvas.height = device.ICON_SIZE
+
+    // We probably should reuse this instead of creating it each time.
+    let ctx = canvas.getContext('2d')
+    if (!ctx) {
+        console.log("Error getting context.")
+        return
+    }
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    if (invert) {
+        ctx.fillStyle = bgColor
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+    }
+
+    ctx.drawImage(image, canvas.height * .10, canvas.width * .10, canvas.height * .80, canvas.width * .80)
+
+    let id = ctx.getImageData(0, 0, canvas.width, canvas.height)
+    console.log(`painting IMAGE on ${b}`)
+    return device.fillKeyBuffer(b, Buffer.from(id.data), { format: 'rgba' })
+}
+
 // sendButtonKey handles injecting the keyboard event into the document based on
 // the buton.
 let sendButtonKey = (b: number) => {
     let evt: KeyboardEvent;
     switch (b) {
         case 0:
-            // Ctrl-E
+            // Video: Ctrl-E
             evt = new KeyboardEvent('keydown', { 'keyCode': 69, 'ctrlKey': true });
+            document.dispatchEvent(evt);
             break
         case 3:
-            // Ctrl-D
+            // Microphone: Ctrl-D
             evt = new KeyboardEvent('keydown', { 'keyCode': 68, 'ctrlKey': true });
+            document.dispatchEvent(evt);
+            break
+        case 4:
+            // Raise Hand
+            // (no keyboard shortcut)
+            let e = document.querySelector("button[aria-label*=' hand']") as HTMLElement;
+            e?.click()
             break
         default:
             return
     }
-    document.dispatchEvent(evt);
 }
 
 let drawButton = async (device: StreamDeckWeb, b: number): Promise<void> => {
     // TODO: do something smarter for different kinds of devices
-    let [a, v] = meetStatus()
+    let [a, v, h] = meetStatus()
     switch (b) {
         case 0:
-            return paintButton(device, b, "Camera", v)
+            return paintButtonImage(device, b, v ? videocam_offImg : videocamImg, v);
         case 3:
-            return paintButton(device, b, "Microphone", a)
+            return paintButtonImage(device, b, a ? mic_offImg : mic_noneImg, a)
+        case 4:
+            if (hasHand()) {
+                return paintButtonImage(device, b, front_handImg, !h, "blue")
+            }
+            return
         case 2:
-            // this is the clock, don't update it here
+            drawClock(device)
             return
         default:
             return device.clearKey(b)
@@ -196,12 +251,20 @@ let gA: boolean = false;
 let gV: boolean = false;
 */
 
-let meetStatus = (): [boolean, boolean] => {
-    let a = document.querySelector("div[aria-label*='ctrl + d']")
+let hasHand = (): boolean => {
+    return document.querySelector("button[aria-label*=' hand']") !== null
+}
+
+let meetStatus = (): [boolean, boolean, boolean] => {
+    // It might be a button, it might be a div.  Look for both.
+    let a = document.querySelector("button[aria-label*='ctrl + d'],div[aria-label*='ctrl + d']")
         ?.getAttribute("data-is-muted") == "true";
-    let v = document.querySelector("div[aria-label*='ctrl + e']")
+    let v = document.querySelector("button[aria-label*='ctrl + e'],div[aria-label*='ctrl + e']")
         ?.getAttribute("data-is-muted") == "true";
+    let h = document.querySelector("button[aria-label*=' hand']")
+        ?.getAttribute("aria-pressed") !== "true";
+
     //gA = a; gV = v;
     // todo: consider if creating a new array object here is too much overhead
-    return [a, v]
+    return [a, v, h]
 }
