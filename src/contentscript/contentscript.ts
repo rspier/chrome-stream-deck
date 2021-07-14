@@ -32,6 +32,8 @@ let videocam_offImg = new Image();
 videocam_offImg.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0Ij48cGF0aCBkPSJNMCAwaDI0djI0SDBWMHoiIGZpbGw9Im5vbmUiLz48cGF0aCBkPSJNOS41NiA4bC0yLTItNC4xNS00LjE0TDIgMy4yNyA0LjczIDZINGMtLjU1IDAtMSAuNDUtMSAxdjEwYzAgLjU1LjQ1IDEgMSAxaDEyYy4yMSAwIC4zOS0uMDguNTUtLjE4TDE5LjczIDIxbDEuNDEtMS40MS04Ljg2LTguODZMOS41NiA4ek01IDE2VjhoMS43M2w4IDhINXptMTAtOHYyLjYxbDYgNlY2LjVsLTQgNFY3YzAtLjU1LS40NS0xLTEtMWgtNS42MWwyIDJIMTV6IiBmaWxsPSJ3aGl0ZSIvPjwvc3ZnPgo=';
 let videocamImg = new Image();
 videocamImg.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0Ij48cGF0aCBkPSJNMCAwaDI0djI0SDBWMHoiIGZpbGw9Im5vbmUiIC8+PHBhdGggZD0iTTE1IDh2OEg1VjhoMTBtMS0ySDRjLS41NSAwLTEgLjQ1LTEgMXYxMGMwIC41NS40NSAxIDEgMWgxMmMuNTUgMCAxLS40NSAxLTF2LTMuNWw0IDR2LTExbC00IDRWN2MwLS41NS0uNDUtMS0xLTF6IiBmaWxsPSJ3aGl0ZSIgLz48L3N2Zz4K';
+let call_endImg = new Image();
+call_endImg.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMjRweCIgZmlsbD0iIzQ1NUE2NCI+PHBhdGggZD0iTTAgMGgyNHYyNEgwVjB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTIzLjYyIDExLjI3Yy0yLjAzLTEuNzItNC40Ni0zLTcuMTItMy42OUMxNS4wNiA3LjIxIDEzLjU2IDcgMTIgN3MtMy4wNi4yMS00LjUuNThjLTIuNjYuNjktNS4wOCAxLjk2LTcuMTIgMy42OS0uNDUuMzgtLjUgMS4wNy0uMDggMS40OWwuNjcuNjcgMi4yNiAyLjI2Yy4zMy4zMy44NS4zOSAxLjI1LjEzbDIuNTYtMS42NGMuMjktLjE4LjQ2LS41LjQ2LS44NFY5LjY1QzguOTMgOS4yMyAxMC40NCA5IDEyIDlzMy4wNy4yMyA0LjUuNjV2My42OGMwIC4zNC4xNy42Ni40Ni44NGwyLjU2IDEuNjRjLjQuMjUuOTIuMiAxLjI1LS4xM2wyLjI2LTIuMjYuNjctLjY3Yy40MS0uNDEuMzctMS4xLS4wOC0xLjQ4eiIgZmlsbD0id2hpdGUiLz48L3N2Zz4K';
 
 // Create a button so we can call requestStreamDeck() -- it requires a user action.
 const p = document.createElement("p");
@@ -198,6 +200,12 @@ let sendButtonKey = (b: number) => {
             evt = new KeyboardEvent('keydown', { 'keyCode': 69, 'ctrlKey': true });
             document.dispatchEvent(evt);
             break
+        case 1:
+            // Hangup
+            // (no keyboard shortcut)
+            let end = document.querySelector("button[aria-label='Leave call']") as HTMLElement;
+            end?.click()
+            break
         case 3:
             // Microphone: Ctrl-D
             evt = new KeyboardEvent('keydown', { 'keyCode': 68, 'ctrlKey': true });
@@ -206,8 +214,8 @@ let sendButtonKey = (b: number) => {
         case 4:
             // Raise Hand
             // (no keyboard shortcut)
-            let e = document.querySelector("button[aria-label*=' hand']") as HTMLElement;
-            e?.click()
+            let hand = document.querySelector("button[aria-label*=' hand']") as HTMLElement;
+            hand?.click()
             break
         default:
             return
@@ -220,6 +228,11 @@ let drawButton = async (device: StreamDeckWeb, b: number): Promise<void> => {
     switch (b) {
         case 0:
             return paintButtonImage(device, b, v ? videocam_offImg : videocamImg, v);
+        case 1:
+            if (hasHup()) {
+              return paintButtonImage(device, b, call_endImg, true)
+            }
+            return
         case 3:
             return paintButtonImage(device, b, a ? mic_offImg : mic_noneImg, a)
         case 4:
@@ -253,6 +266,10 @@ let gV: boolean = false;
 
 let hasHand = (): boolean => {
     return document.querySelector("button[aria-label*=' hand']") !== null
+}
+
+let hasHup = (): boolean => {
+    return document.querySelector("button[aria-label='Leave call']") !== null
 }
 
 let meetStatus = (): [boolean, boolean, boolean] => {
