@@ -1,12 +1,16 @@
 {
   "manifest_version": 2,
   "name": "Stream Deck for Chrome",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "content_scripts": [
     {
       "js": ["contentscript.js"],
       "css": ["contentscript.css"],
-      "matches": ["https://meet.google.com/*"]
+        "matches": [
+            "https://meet.google.com/*",
+            "https://preprod.meet.sandbox.google.com/*",
+            "https://preprod.meet.google.com/*"
+        ]
     }
   ],
   "web_accessible_resources": ["assets/*"],
