@@ -104,7 +104,11 @@ let setupHandlers = (sd: StreamDeckWeb) => {
 
 let drawClock = async (sd: StreamDeckWeb) => {
     let now = new Date();
-    await paintButton(sd, 2, now.getHours() % 12 + ":" + ("0" + now.getMinutes()).substr(-2, 2))
+    let h = now.getHours() % 12;
+    if (h == 0) {
+       h = 12;
+    }
+    await paintButton(sd, 2, h + ":" + ("0" + now.getMinutes()).substr(-2, 2))
 }
 
 let getDevice = async (): Promise<StreamDeckWeb | null> => {
