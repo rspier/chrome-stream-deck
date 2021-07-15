@@ -200,12 +200,8 @@ let sendButtonKey = (b: number) => {
             evt = new KeyboardEvent('keydown', { 'keyCode': 69, 'ctrlKey': true });
             document.dispatchEvent(evt);
             break
-        case 1:
-            // Hangup
-            // (no keyboard shortcut)
-            let end = document.querySelector("button[aria-label='Leave call']") as HTMLElement;
-            end?.click()
-            break
+        // case 1: empty
+        // case 2: clock
         case 3:
             // Microphone: Ctrl-D
             evt = new KeyboardEvent('keydown', { 'keyCode': 68, 'ctrlKey': true });
@@ -216,6 +212,12 @@ let sendButtonKey = (b: number) => {
             // (no keyboard shortcut)
             let hand = document.querySelector("button[aria-label*=' hand']") as HTMLElement;
             hand?.click()
+            break
+        case 5:
+            // Hangup
+            // (no keyboard shortcut)
+            let end = document.querySelector("button[aria-label='Leave call']") as HTMLElement;
+            end?.click()
             break
         default:
             return
@@ -228,10 +230,9 @@ let drawButton = async (device: StreamDeckWeb, b: number): Promise<void> => {
     switch (b) {
         case 0:
             return paintButtonImage(device, b, v ? videocam_offImg : videocamImg, v);
-        case 1:
-            if (hasHup()) {
-              return paintButtonImage(device, b, call_endImg, true)
-            }
+        // case 1: empty
+        case 2:
+            drawClock(device)
             return
         case 3:
             return paintButtonImage(device, b, a ? mic_offImg : mic_noneImg, a)
@@ -240,8 +241,10 @@ let drawButton = async (device: StreamDeckWeb, b: number): Promise<void> => {
                 return paintButtonImage(device, b, front_handImg, !h, "blue")
             }
             return
-        case 2:
-            drawClock(device)
+        case 5:
+            if (hasHup()) {
+              return paintButtonImage(device, b, call_endImg, true)
+            }
             return
         default:
             return device.clearKey(b)
