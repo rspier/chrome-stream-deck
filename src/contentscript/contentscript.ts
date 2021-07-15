@@ -247,7 +247,7 @@ let drawButton = async (device: StreamDeckWeb, b: number): Promise<void> => {
             return
         case 5:
             if (hasHup()) {
-              return paintButtonImage(device, b, call_endImg, true)
+              return paintButtonImage(device, b, call_endImg, false)
             }
             return
         default:
