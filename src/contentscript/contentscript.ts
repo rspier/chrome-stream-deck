@@ -214,13 +214,13 @@ let sendButtonKey = (b: number) => {
         case 4:
             // Raise Hand
             // (no keyboard shortcut)
-            let hand = document.querySelector("button[aria-label*=' hand']") as HTMLElement;
+            let hand = document.querySelector("button[aria-label*=' hand' i]") as HTMLElement;
             hand?.click()
             break
         case 5:
             // Hangup
             // (no keyboard shortcut)
-            let end = document.querySelector("button[aria-label='Leave call']") as HTMLElement;
+            let end = document.querySelector("button[aria-label='Leave call' i]") as HTMLElement;
             end?.click()
             break
         default:
@@ -272,20 +272,20 @@ let gV: boolean = false;
 */
 
 let hasHand = (): boolean => {
-    return document.querySelector("button[aria-label*=' hand']") !== null
+    return document.querySelector("button[aria-label*=' hand' i]") !== null
 }
 
 let hasHup = (): boolean => {
-    return document.querySelector("button[aria-label='Leave call']") !== null
+    return document.querySelector("button[aria-label='Leave call' i]") !== null
 }
 
 let meetStatus = (): [boolean, boolean, boolean] => {
     // It might be a button, it might be a div.  Look for both.
-    let a = document.querySelector("button[aria-label*='ctrl + d'],div[aria-label*='ctrl + d']")
+    let a = document.querySelector("button[aria-label*='ctrl + d' i],div[aria-label*='ctrl + d' i]")
         ?.getAttribute("data-is-muted") == "true";
-    let v = document.querySelector("button[aria-label*='ctrl + e'],div[aria-label*='ctrl + e']")
+    let v = document.querySelector("button[aria-label*='ctrl + e' i],div[aria-label*='ctrl + e' i]")
         ?.getAttribute("data-is-muted") == "true";
-    let h = document.querySelector("button[aria-label*=' hand']")
+    let h = document.querySelector("button[aria-label*=' hand' i]")
         ?.getAttribute("aria-pressed") !== "true";
 
     //gA = a; gV = v;
