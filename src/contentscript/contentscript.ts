@@ -41,6 +41,8 @@ p.textContent = "Stream Deck";
 p.id = "sdbutton"
 document.body.appendChild(p);
 
+const isMacOS = navigator.appVersion.indexOf("Mac OS") != -1;
+
 // hid isn't yet in the typings, so need to cast it to an any.
 if (!("hid" in (navigator as any))) {
     // The WebHID API is not supported.
@@ -201,14 +203,14 @@ let sendButtonKey = (b: number) => {
     switch (b) {
         case 0:
             // Video: Ctrl-E
-            evt = new KeyboardEvent('keydown', { 'keyCode': 69, 'ctrlKey': true });
+            evt = new KeyboardEvent('keydown', { 'keyCode': 69, 'ctrlKey': !isMacOS, 'metaKey': isMacOS });
             document.dispatchEvent(evt);
             break
         // case 1: empty
         // case 2: clock
         case 3:
             // Microphone: Ctrl-D
-            evt = new KeyboardEvent('keydown', { 'keyCode': 68, 'ctrlKey': true });
+            evt = new KeyboardEvent('keydown', { 'keyCode': 68, 'ctrlKey': !isMacOS, 'metaKey': isMacOS });
             document.dispatchEvent(evt);
             break
         case 4:
@@ -281,9 +283,9 @@ let hasHup = (): boolean => {
 
 let meetStatus = (): [boolean, boolean, boolean] => {
     // It might be a button, it might be a div.  Look for both.
-    let a = document.querySelector("button[aria-label*='ctrl + d' i],div[aria-label*='ctrl + d' i]")
+    let a = document.querySelector("button[aria-label*='ctrl + d' i],div[aria-label*='ctrl + d' i],button[aria-label*='⌘ + d' i],div[aria-label*='⌘ + d' i]")
         ?.getAttribute("data-is-muted") == "true";
-    let v = document.querySelector("button[aria-label*='ctrl + e' i],div[aria-label*='ctrl + e' i]")
+    let v = document.querySelector("button[aria-label*='ctrl + e' i],div[aria-label*='ctrl + e' i],button[aria-label*='⌘ + e' i],div[aria-label*='⌘ + e' i]")
         ?.getAttribute("data-is-muted") == "true";
     let h = document.querySelector("button[aria-label*=' hand' i]")
         ?.getAttribute("aria-pressed") !== "true";
