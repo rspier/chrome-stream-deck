@@ -34,6 +34,10 @@ let videocamImg = new Image();
 videocamImg.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0Ij48cGF0aCBkPSJNMCAwaDI0djI0SDBWMHoiIGZpbGw9Im5vbmUiIC8+PHBhdGggZD0iTTE1IDh2OEg1VjhoMTBtMS0ySDRjLS41NSAwLTEgLjQ1LTEgMXYxMGMwIC41NS40NSAxIDEgMWgxMmMuNTUgMCAxLS40NSAxLTF2LTMuNWw0IDR2LTExbC00IDRWN2MwLS41NS0uNDUtMS0xLTF6IiBmaWxsPSJ3aGl0ZSIgLz48L3N2Zz4K';
 let call_endImg = new Image();
 call_endImg.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMjRweCIgZmlsbD0iIzQ1NUE2NCI+PHBhdGggZD0iTTAgMGgyNHYyNEgwVjB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTIzLjYyIDExLjI3Yy0yLjAzLTEuNzItNC40Ni0zLTcuMTItMy42OUMxNS4wNiA3LjIxIDEzLjU2IDcgMTIgN3MtMy4wNi4yMS00LjUuNThjLTIuNjYuNjktNS4wOCAxLjk2LTcuMTIgMy42OS0uNDUuMzgtLjUgMS4wNy0uMDggMS40OWwuNjcuNjcgMi4yNiAyLjI2Yy4zMy4zMy44NS4zOSAxLjI1LjEzbDIuNTYtMS42NGMuMjktLjE4LjQ2LS41LjQ2LS44NFY5LjY1QzguOTMgOS4yMyAxMC40NCA5IDEyIDlzMy4wNy4yMyA0LjUuNjV2My42OGMwIC4zNC4xNy42Ni40Ni44NGwyLjU2IDEuNjRjLjQuMjUuOTIuMiAxLjI1LS4xM2wyLjI2LTIuMjYuNjctLjY3Yy40MS0uNDEuMzctMS4xLS4wOC0xLjQ4eiIgZmlsbD0icmVkIi8+PC9zdmc+Cg==';
+let ccImg = new Image();
+ccImg.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMjRweCIgZmlsbD0iIzAwMDAwMCI+PHBhdGggZD0iTTAgMGgyNHYyNEgwVjB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTE5IDRINWMtMS4xMSAwLTIgLjktMiAydjEyYzAgMS4xLjg5IDIgMiAyaDE0YzEuMSAwIDItLjkgMi0yVjZjMC0xLjEtLjktMi0yLTJ6bTAgMTRINVY2aDE0djEyek03IDE1aDNjLjU1IDAgMS0uNDUgMS0xdi0xSDkuNXYuNWgtMnYtM2gydi41SDExdi0xYzAtLjU1LS40NS0xLTEtMUg3Yy0uNTUgMC0xIC40NS0xIDF2NGMwIC41NS40NSAxIDEgMXptNyAwaDNjLjU1IDAgMS0uNDUgMS0xdi0xaC0xLjV2LjVoLTJ2LTNoMnYuNUgxOHYtMWMwLS41NS0uNDUtMS0xLTFoLTNjLS41NSAwLTEgLjQ1LTEgMXY0YzAgLjU1LjQ1IDEgMSAxeiIgZmlsbD0id2hpdGUiLz48L3N2Zz4=';
+let cc_offImg = new Image();
+cc_offImg.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDI0IDI0IiBoZWlnaHQ9IjI0cHgiIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0cHgiIGZpbGw9IiMwMDAwMDAiPjxyZWN0IGZpbGw9Im5vbmUiIGhlaWdodD0iMjQiIHdpZHRoPSIyNCIvPjxwYXRoIGQ9Ik0xMywxMGMwLTAuNTUsMC40NS0xLDEtMWgzYzAuNTUsMCwxLDAuNDUsMSwxdjFoLTEuNXYtMC41aC0ydjFMMTMsMTB6IE0xNi41LDEzLjVsMS4yMSwxLjIxQzE3Ljg5LDE0LjUyLDE4LDE0LjI3LDE4LDE0di0xIGgtMS41VjEzLjV6IE04LjgzLDZIMTl2MTAuMTdsMS45OCwxLjk4YzAtMC4wNSwwLjAyLTAuMSwwLjAyLTAuMTZWNmMwLTEuMS0wLjktMi0yLTJINi44M0w4LjgzLDZ6IE0xOS43OCwyMi42MUwxNy4xNywyMEg1IGMtMS4xMSwwLTItMC45LTItMlY2YzAtMC4wNSwwLjAyLTAuMSwwLjAyLTAuMTVMMS4zOSw0LjIybDEuNDEtMS40MWwxOC4zOCwxOC4zOEwxOS43OCwyMi42MXogTTcuNSwxMy41aDJWMTNoMC42N2wtMi41LTIuNUg3LjUgVjEzLjV6IE0xNS4xNywxOEwxMSwxMy44M1YxNGMwLDAuNTUtMC40NSwxLTEsMUg3Yy0wLjU1LDAtMS0wLjQ1LTEtMXYtNGMwLTAuMzIsMC4xNi0wLjU5LDAuNC0wLjc4TDUsNy44M1YxOEgxNS4xN3oiIGZpbGw9IndoaXRlIi8+PC9zdmc+';
 
 // Create a button so we can call requestStreamDeck() -- it requires a user action.
 const p = document.createElement("p");
@@ -206,7 +210,11 @@ let sendButtonKey = (b: number) => {
             evt = new KeyboardEvent('keydown', { 'keyCode': 69, 'ctrlKey': !isMacOS, 'metaKey': isMacOS });
             document.dispatchEvent(evt);
             break
-        // case 1: empty
+        // Closed Captions: c (keyCode=67 for Javascript)
+        case 1:
+            evt = new KeyboardEvent('keydown', { 'keyCode': 67, 'ctrlKey': false, 'metaKey': false });
+            document.dispatchEvent(evt);
+            break
         // case 2: clock
         case 3:
             // Microphone: Ctrl-D
@@ -221,7 +229,7 @@ let sendButtonKey = (b: number) => {
             break
         case 5:
             // Hangup
-            // (no keyboard shortcut)
+            // (no keyboard shortcut) <= there is one in fact with h
             let end = document.querySelector("button[aria-label='Leave call' i]") as HTMLElement;
             end?.click()
             break
@@ -232,11 +240,12 @@ let sendButtonKey = (b: number) => {
 
 let drawButton = async (device: StreamDeckWeb, b: number): Promise<void> => {
     // TODO: do something smarter for different kinds of devices
-    let [a, v, h] = meetStatus()
+    let [a, v, h, c] = meetStatus()
     switch (b) {
         case 0:
             return paintButtonImage(device, b, v ? videocam_offImg : videocamImg, v);
-        // case 1: empty
+        case 1:
+            return paintButtonImage(device, b, c ? ccImg : cc_offImg, c, "blue");
         case 2:
             drawClock(device)
             return
@@ -281,7 +290,7 @@ let hasHup = (): boolean => {
     return document.querySelector("button[aria-label='Leave call' i]") !== null
 }
 
-let meetStatus = (): [boolean, boolean, boolean] => {
+let meetStatus = (): [boolean, boolean, boolean, boolean] => {
     // It might be a button, it might be a div.  Look for both.
     let a = document.querySelector("button[aria-label*='ctrl + d' i],div[aria-label*='ctrl + d' i],button[aria-label*='⌘ + d' i],div[aria-label*='⌘ + d' i]")
         ?.getAttribute("data-is-muted") == "true";
@@ -289,8 +298,10 @@ let meetStatus = (): [boolean, boolean, boolean] => {
         ?.getAttribute("data-is-muted") == "true";
     let h = document.querySelector("button[aria-label*=' hand' i]")
         ?.getAttribute("aria-pressed") !== "true";
+    let c = document.querySelector("button[aria-label*=' captions (c)' i]")
+        ?.getAttribute("aria-pressed") == "true";    
 
     //gA = a; gV = v;
     // todo: consider if creating a new array object here is too much overhead
-    return [a, v, h]
+    return [a, v, h, c]
 }
