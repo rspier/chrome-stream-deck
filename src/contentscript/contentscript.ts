@@ -54,6 +54,12 @@ if (!("hid" in (navigator as any))) {
 }
 
 window.addEventListener("load", async (_) => {
+    // Don't initialize if we're not on a page which has a video window.
+    // Detect the video window through the existence of a "More options" button.
+    if (!hasOptions()) {
+        return
+    }
+
     // attempt to get the previously selected Stream Deck.
     let sds = await getStreamDecks();
     if (sds.length > 0) {
@@ -106,9 +112,26 @@ let setupHandlers = (sd: StreamDeckWeb) => {
         drawButtons(sd);  // this is a good time to make sure buttons are in sync
         drawClock(sd)
     }, 5000)
+
+    // Attempt to hide display when we leave the page or a meeting.
+    let cleanupHandler = (_: Event) => {
+        sd.clearPanel();
+        if (clockInterval) {
+            window.clearInterval(clockInterval);
+        }
+    }
+    window.addEventListener("beforeunload", cleanupHandler)
+    window.addEventListener("unload", cleanupHandler)
 }
 
 let drawClock = async (sd: StreamDeckWeb) => {
+    // Don't draw the clock if we're not on a page which has a video window.
+    // Detect the video window through the existence of a "More options" button.
+    if (!hasOptions()) {
+        sd.clearPanel()
+        return
+    }
+
     let now = new Date();
     let h = now.getHours() % 12;
     if (h == 0) {
@@ -271,6 +294,12 @@ let drawButtons = async (device: StreamDeckWeb) => {
         console.log("streamdeck not initialized")
         return
     }
+    // don't draw the buttons if we're not on a page which has a video window.
+    // Detect the video window through the existence of a "More options" button.
+    if (!hasOptions()) {
+        device.clearPanel()
+        return
+    }
     for (let b = 0; b < device.NUM_KEYS; b++) {
         await drawButton(device, b)
     }
@@ -290,6 +319,10 @@ let hasHup = (): boolean => {
     return document.querySelector("button[aria-label='Leave call' i]") !== null
 }
 
+let hasOptions = (): boolean => {
+    return document.querySelector("button[aria-label='More options' i]") !== null
+}
+
 let meetStatus = (): [boolean, boolean, boolean, boolean] => {
     // It might be a button, it might be a div.  Look for both.
     let a = document.querySelector("button[aria-label*='ctrl + d' i],div[aria-label*='ctrl + d' i],button[aria-label*='⌘ + d' i],div[aria-label*='⌘ + d' i]")
@@ -299,7 +332,7 @@ let meetStatus = (): [boolean, boolean, boolean, boolean] => {
     let h = document.querySelector("button[aria-label*=' hand' i]")
         ?.getAttribute("aria-pressed") !== "true";
     let c = document.querySelector("button[aria-label*=' captions (c)' i]")
-        ?.getAttribute("aria-pressed") == "true";    
+        ?.getAttribute("aria-pressed") == "true";
 
     //gA = a; gV = v;
     // todo: consider if creating a new array object here is too much overhead
