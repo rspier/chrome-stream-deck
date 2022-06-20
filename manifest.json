@@ -1,7 +1,7 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Stream Deck for Chrome",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "content_scripts": [
     {
       "js": ["contentscript.js"],
@@ -13,6 +13,7 @@
         ]
     }
   ],
-  "web_accessible_resources": ["assets/*"],
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
 }
