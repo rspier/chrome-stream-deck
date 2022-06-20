@@ -131,7 +131,7 @@ let getDevice = async (): Promise<StreamDeckWeb | null> => {
 }
 
 p.addEventListener("click", async (_) => {
-    console.log('got click');
+    console.debug('got click');
     // attempt to get the previously selected Stream Deck
     let sd = await getDevice()
     if (!sd) {
@@ -171,7 +171,7 @@ let paintButton = async (device: StreamDeck, b: number, text: string, invert = f
     ctx.fillText(text, 8, 60, canvas.width * .8)
 
     let id = ctx.getImageData(0, 0, canvas.width, canvas.height)
-    console.log(`painting ${text} on ${b}`)
+    console.debug(`painting ${text} on ${b}`)
     return device.fillKeyBuffer(b, Buffer.from(id.data), { format: 'rgba' })
 }
 
@@ -196,7 +196,7 @@ let paintButtonImage = async (device: StreamDeck, b: number, image: HTMLImageEle
     ctx.drawImage(image, canvas.height * .10, canvas.width * .10, canvas.height * .80, canvas.width * .80)
 
     let id = ctx.getImageData(0, 0, canvas.width, canvas.height)
-    console.log(`painting IMAGE on ${b}`)
+    console.debug(`painting IMAGE on ${b}`)
     return device.fillKeyBuffer(b, Buffer.from(id.data), { format: 'rgba' })
 }
 
