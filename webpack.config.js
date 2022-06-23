@@ -69,3 +69,9 @@ module.exports = {
     extensions: ['.ts', '.js'],
   },
 };
+
+// On production, do some things differently...
+if (process.env.NODE_ENV === 'production') {
+  // no source maps to shrink things down
+  module.exports['devtool'] = undefined;
+}
