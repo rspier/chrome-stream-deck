@@ -328,16 +328,19 @@ let hasOptions = (): boolean => {
 
 let meetStatus = (): [boolean, boolean, boolean, boolean] => {
     // It might be a button, it might be a div.  Look for both.
-    let a = document.querySelector("button[aria-label*='ctrl + d' i],div[aria-label*='ctrl + d' i],button[aria-label*='⌘ + d' i],div[aria-label*='⌘ + d' i]")
+    // Microphone:
+    let a = document.querySelector("button[aria-label*='ctrl + d' i],div[aria-label*='ctrl + d' i],button[aria-label*='⌘ + d' i],div[aria-label*='⌘ + d' i],button[aria-label*='Turn off microphone' i],button[aria-label*='Turn on microphone' i]")
         ?.getAttribute("data-is-muted") == "true";
-    let v = document.querySelector("button[aria-label*='ctrl + e' i],div[aria-label*='ctrl + e' i],button[aria-label*='⌘ + e' i],div[aria-label*='⌘ + e' i]")
+    // Video:
+    let v = document.querySelector("button[aria-label*='ctrl + e' i],div[aria-label*='ctrl + e' i],button[aria-label*='⌘ + e' i],div[aria-label*='⌘ + e' i],button[aria-label*='Turn off camera' i],button[aria-label*='Turn on camera' i]")
         ?.getAttribute("data-is-muted") == "true";
     let h = document.querySelector("button[aria-label*=' hand' i]")
-        ?.getAttribute("aria-pressed") !== "true";
-    let c = document.querySelector("button[aria-label*=' captions (c)' i]")
-        ?.getAttribute("aria-pressed") == "true";
+        ?.getAttribute("aria-label")
+       ?.includes("Raise hand") == true;
+    let c = document.querySelector("button[aria-label*=' captions (c)' i],button[aria-label*='Turn off captions' i],button[aria-label*='Turn on captions' i]")
+        ?.getAttribute("aria-label")
+       ?.includes(" off ") == true;
 
-    //gA = a; gV = v;
     // todo: consider if creating a new array object here is too much overhead
     return [a, v, h, c]
 }
