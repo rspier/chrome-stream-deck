@@ -83,6 +83,9 @@ let setupHandlers = (sd: StreamDeckWeb) => {
         console.log(`Key ${key} down`)
         sendButtonKey(key)
         sd.fillKeyColor(key, 255, 0, 0)
+        setTimeout(() => {
+          drawButton(sd, key)
+        }, 250);
     });
 
     sd.on('up', (key: number) => {
