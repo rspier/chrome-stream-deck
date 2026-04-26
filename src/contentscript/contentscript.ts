@@ -50,7 +50,11 @@ const isMacOS = navigator.appVersion.indexOf("Mac OS") != -1;
 // hid isn't yet in the typings, so need to cast it to an any.
 if (!("hid" in (navigator as any))) {
     // The WebHID API is not supported.
-    alert("WebHID not enabled: Enable at chrome://flags/#enable-experimental-web-platform-features");
+    console.error("WebHID not enabled: Enable at chrome://flags/#enable-experimental-web-platform-features");
+    p.textContent = "WebHID Not Enabled";
+    p.title = "Enable at chrome://flags/#enable-experimental-web-platform-features";
+    p.style.background = "red";
+    p.style.color = "white";
 }
 
 window.addEventListener("load", async (_) => {
